@@ -1,0 +1,3 @@
+Java is awesome.
+Java is fast.
+Spring uses Java.
