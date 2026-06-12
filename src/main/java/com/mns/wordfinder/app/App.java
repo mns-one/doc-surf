@@ -31,8 +31,9 @@ public class App {
 		for(String token: tokens){
 			indexer.addWord(token);
 		}
-
-		indexer.show();
+        
+        indexer.show();
+		indexer.stats();
 
     }
 

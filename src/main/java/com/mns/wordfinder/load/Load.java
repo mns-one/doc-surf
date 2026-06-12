@@ -9,7 +9,7 @@ public class Load {
     public String file() {
 
         try{
-            String content = Files.readString(Path.of("dev_assets/sample.txt"));
+            String content = Files.readString(Path.of("doc_files/sample.txt"));
             System.out.println(content);
             return content;
         }

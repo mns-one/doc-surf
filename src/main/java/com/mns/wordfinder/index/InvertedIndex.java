@@ -32,5 +32,30 @@ public class InvertedIndex {
     public void show() {
         System.out.println(index);
     }
+
+    public void stats() {
+
+        int totalwords = 0;
+        int maxFreq = 0;
+        String maxFreqWord = "";
+
+        for(Map.Entry<String, Integer> entry : index.entrySet()){
+
+            String word = entry.getKey();
+            int freq = entry.getValue();
+
+            totalwords += freq;
+            if(freq > maxFreq){
+                maxFreq = freq;
+                maxFreqWord = word;
+            }
+
+        }
+
+        System.out.println("Total words -> " + totalwords);
+        System.out.println("Unique words -> " + index.size());
+        System.out.println("Most freq word -> " + maxFreqWord);
+
+    }
     
 }
