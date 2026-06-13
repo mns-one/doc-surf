@@ -1,16 +1,16 @@
-package com.mns.wordfinder.load;
+package com.mns.wordfinder.file;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class Load {
+public class File {
 
-    public String file(Path path) {
+    public String load(Path path) {
 
         try{
             String content = Files.readString(path);
-            System.out.println(content);
+            //System.out.println(content);
             return content;
         }
         catch(IOException e){
