@@ -2,3 +2,7 @@ pYthon
 ja va
 java
 sg's
+java
+pYthon
+python
+python

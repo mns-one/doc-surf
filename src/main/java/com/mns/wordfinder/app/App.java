@@ -1,6 +1,5 @@
 package com.mns.wordfinder.app;
 
-import com.mns.wordfinder.WordFinderApplication;
 import com.mns.wordfinder.file.File;
 
 import java.io.IOException;
@@ -9,8 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -91,7 +90,7 @@ public class App {
                 continue;
             }
 
-            Set<String> result = query.search(parts);
+            Map<String, Integer> result = query.search(parts);
 
             if(result.size() == 0){
                 System.out.println("No document match found for query!");
