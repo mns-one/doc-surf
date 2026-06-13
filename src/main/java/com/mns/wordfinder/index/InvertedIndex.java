@@ -2,6 +2,7 @@ package com.mns.wordfinder.index;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -32,6 +33,10 @@ public class InvertedIndex {
 
         return index.get(word);
 
+    }
+
+    public Set<String> allWords(){
+        return index.keySet();
     }
 
     public void show() {

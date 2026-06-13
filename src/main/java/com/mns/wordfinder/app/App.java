@@ -1,5 +1,8 @@
 package com.mns.wordfinder.app;
 
+import com.mns.wordfinder.WordFinderApplication;
+import com.mns.wordfinder.file.File;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,29 +10,34 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
 import com.mns.wordfinder.index.InvertedIndex;
-import com.mns.wordfinder.load.Load;
 import com.mns.wordfinder.model.Document;
 import com.mns.wordfinder.parser.Tokenizer;
+import com.mns.wordfinder.search.Query;
 
 @Component
 public class App {
 
     private final InvertedIndex indexer;
+    private final Query query;
 
-    public App(InvertedIndex indexer){
+    public App(InvertedIndex indexer, Query qeury){
         this.indexer = indexer;
+        this.query = qeury;
     }
 
     public void load() {
 
-        Load loader = new Load();
+        File loader = new File();
         List<Document> docs = new ArrayList<>();;
+
+        System.out.println("Fetching files...");
 
         // store stream of all files into document model
         try (Stream<Path> stream = Files.list(Paths.get("doc_files"))) {
@@ -37,8 +45,8 @@ public class App {
             List<Path> filesList = stream.collect(Collectors.toList());
 
             for (Path file : filesList) {
-                System.out.println("Fetching " + file + "...");
-                String content = loader.file(file);
+                //System.out.println("Fetching " + file + "...");
+                String content = loader.load(file);
                 Document doc = new Document(file.getFileName().toString(), content);
                 docs.add(doc);
             }
@@ -72,16 +80,24 @@ public class App {
 
         while(true){
 
-            System.out.print("Enter a word: ");
+            System.out.print("Enter query: ");
 
-            String word = scanner.nextLine().toLowerCase().trim();
+            String user_input = scanner.nextLine().toLowerCase().trim();
 
-            if(indexer.contains(word)){
-                System.out.println(word + " exists in doc!");
-                System.out.println("Data -> " + indexer.wordData(word));
+            String[] parts = user_input.split("\\s+");
+
+            if(parts.length != 1 && (parts.length > 3 || parts.length < 3)){
+                System.out.println("Invalid input!");
+                continue;
             }
-            else{
-                System.out.println(word + " does not exist in doc!");
+
+            Set<String> result = query.search(parts);
+
+            if(result.size() == 0){
+                System.out.println("No document match found for query!");
+            }
+            else{  
+                System.out.println("Documents matches for Query: " + result);
             }
 
         }
