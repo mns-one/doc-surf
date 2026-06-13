@@ -8,12 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class InvertedIndex {
 
-    private final Map<String, Integer> index = new HashMap<>();
+    private final Map<String, Map<String, Integer>> index = new HashMap<>();
 
-    public void addWord(String word) {
+    public void addWord(String word, String filename) {
 
-        word = word.toLowerCase().trim();
-        index.put(word, index.getOrDefault(word, 0)+1);
+        Map<String, Integer> docs = index.get(word);
+        if (docs == null) {
+            docs = new HashMap<>();
+            index.put(word, docs);
+        }
+
+        docs.put(filename, docs.getOrDefault(filename, 0) + 1);
 
     }
 
@@ -23,9 +28,9 @@ public class InvertedIndex {
 
     }
 
-    public int frequency(String word) {
+    public Map<String, Integer> wordData(String word) {
 
-        return index.getOrDefault(word, 0);
+        return index.get(word);
 
     }
 
@@ -34,28 +39,30 @@ public class InvertedIndex {
     }
 
     public void stats() {
-
-        int totalwords = 0;
+        int totalWords = 0;
         int maxFreq = 0;
         String maxFreqWord = "";
 
-        for(Map.Entry<String, Integer> entry : index.entrySet()){
-
+        for (Map.Entry<String, Map<String, Integer>> entry : index.entrySet()) {
             String word = entry.getKey();
-            int freq = entry.getValue();
+            Map<String, Integer> docFreqs = entry.getValue();
 
-            totalwords += freq;
-            if(freq > maxFreq){
-                maxFreq = freq;
-                maxFreqWord = word;
+            int wordTotalFreq = 0;
+            for (int freq : docFreqs.values()) {
+                wordTotalFreq += freq;
             }
 
+            totalWords += wordTotalFreq;
+
+            if (wordTotalFreq > maxFreq) {
+                maxFreq = wordTotalFreq;
+                maxFreqWord = word;
+            }
         }
 
-        System.out.println("Total words -> " + totalwords);
+        System.out.println("Total words -> " + totalWords);
         System.out.println("Unique words -> " + index.size());
         System.out.println("Most freq word -> " + maxFreqWord);
-
     }
     
 }

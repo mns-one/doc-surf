@@ -6,10 +6,10 @@ import java.nio.file.Path;
 
 public class Load {
 
-    public String file() {
+    public String file(Path path) {
 
         try{
-            String content = Files.readString(Path.of("doc_files/sample.txt"));
+            String content = Files.readString(path);
             System.out.println(content);
             return content;
         }
