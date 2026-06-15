@@ -1,0 +1,4 @@
+cat
+ja
+dog
+va

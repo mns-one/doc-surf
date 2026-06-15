@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class File {
+import org.springframework.stereotype.Component;
 
-    public String load(Path path) {
+
+@Component
+public class FileLoader {
+
+    public String loadDir(Path path) {
 
         try{
             String content = Files.readString(path);
-            //System.out.println(content);
             return content;
         }
         catch(IOException e){

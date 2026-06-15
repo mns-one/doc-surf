@@ -22,7 +22,7 @@ public class WordFinderApplication implements CommandLineRunner {
 
 	@Override
     public void run(String... args) {
-        app.load();
+        app.initialize();
         app.start();
     }
 
