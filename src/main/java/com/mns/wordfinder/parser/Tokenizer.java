@@ -3,7 +3,10 @@ package com.mns.wordfinder.parser;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class Tokenizer {
 
     public List<String> tokenize(String text) {
