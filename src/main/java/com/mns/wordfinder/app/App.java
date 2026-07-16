@@ -101,10 +101,11 @@ public class App {
             System.out.println("---------------------");
             System.out.print("Enter query: ");
 
-            // fetch all words from user input n process them
+            // fetch and tokenize user input
             String user_input = scanner.nextLine().toLowerCase().trim();
             String[] parts = tokenize.tokenize(user_input).toArray(new String[0]);
 
+            // builds a sorted map with filename as key and no of occurences of phrase as value
             Map<String, Integer> result = query.find(parts);
 
             // print result map

@@ -16,9 +16,8 @@ public class ExtractorFactory {
         this.extractors = extractors;
     }
 
+    // Find the first extractor that supports the given file type
     public DocumentExtractor getExtractor(Path file) {
-        // Find the first extractor that supports the given file type
-
         if(extractors.isEmpty()){
             throw new IllegalStateException("No extractors available");
         }
