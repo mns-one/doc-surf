@@ -20,10 +20,10 @@ public class PdfExtractor implements DocumentExtractor {
     @Override
     public String extract(Path file) throws IOException {
 
-        PDDocument document = Loader.loadPDF(file.toFile());
-        PDFTextStripper stripper = new PDFTextStripper();
-        return stripper.getText(document);
-        
+        try(PDDocument document = Loader.loadPDF(file.toFile())) {
+            PDFTextStripper stripper = new PDFTextStripper();
+            return stripper.getText(document);
+        }
     }
     
 }

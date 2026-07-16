@@ -50,23 +50,25 @@ public class App {
         // parse and store file text in Document model
         List<Document> docs = new ArrayList<>();
 
-        Stream<Path> stream = Files.list(Paths.get("doc_files"));
-        List<Path> filesList = stream.collect(Collectors.toList());
+        try(Stream<Path> stream = Files.list(Paths.get("doc_files"))){
+            
+            List<Path> filesList = stream.collect(Collectors.toList());
 
-        for (Path file : filesList) {
-            try{
-                DocumentExtractor extractor = factory.getExtractor(file);
-                String text = extractor.extract(file);
+            for (Path file : filesList) {
+                try{
+                    DocumentExtractor extractor = factory.getExtractor(file);
+                    String text = extractor.extract(file);
 
-                Document doc = new Document(file.getFileName().toString(), text);
-                docs.add(doc);
-            }
-            catch(RuntimeException e){
-                throw new RuntimeException("Error loading extractor", e);
-            }
-            catch(Exception e){
-                log.warn("Error loading file {} : {}", file.getFileName(), e.getMessage());
-                continue;
+                    Document doc = new Document(file.getFileName().toString(), text);
+                    docs.add(doc);
+                }
+                catch(RuntimeException e){
+                    throw new RuntimeException("Error loading extractor", e);
+                }
+                catch(Exception e){
+                    log.warn("Error loading file {} : {}", file.getFileName(), e.getMessage());
+                    continue;
+                }
             }
         }
 

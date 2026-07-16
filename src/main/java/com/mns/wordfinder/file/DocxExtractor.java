@@ -20,9 +20,10 @@ public class DocxExtractor implements DocumentExtractor {
     @Override
     public String extract(Path file) throws IOException {
 
-        XWPFDocument doc = new XWPFDocument(Files.newInputStream(file));
-        XWPFWordExtractor extractor = new XWPFWordExtractor(doc);
-        return extractor.getText();
+        try(XWPFDocument doc = new XWPFDocument(Files.newInputStream(file))) {
+            XWPFWordExtractor extractor = new XWPFWordExtractor(doc);
+            return extractor.getText();
+        }
         
     }
     
