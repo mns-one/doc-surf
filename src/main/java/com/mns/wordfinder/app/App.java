@@ -103,7 +103,7 @@ public class App {
 
             // fetch all words from user input n process them
             String user_input = scanner.nextLine().toLowerCase().trim();
-            String[] parts = user_input.split("\\s+");
+            String[] parts = tokenize.tokenize(user_input).toArray(new String[0]);
 
             Map<String, Integer> result = query.find(parts);
 
