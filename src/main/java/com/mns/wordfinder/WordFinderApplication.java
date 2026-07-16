@@ -1,5 +1,7 @@
 package com.mns.wordfinder;
 
+import java.io.IOException;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,8 +24,16 @@ public class WordFinderApplication implements CommandLineRunner {
 
 	@Override
     public void run(String... args) {
-        app.initialize();
+
+        try {
+            app.initialize();
+        } 
+        catch (IOException e) {
+            throw new RuntimeException("Error initializing application", e);
+        }
+
         app.start();
+
     }
 
 }
