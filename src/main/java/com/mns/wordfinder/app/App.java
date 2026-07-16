@@ -1,6 +1,7 @@
 package com.mns.wordfinder.app;
 
-import com.mns.wordfinder.file.FileLoader;
+import com.mns.wordfinder.file.DocumentExtractor;
+import com.mns.wordfinder.file.ExtractorFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,43 +21,53 @@ import com.mns.wordfinder.model.Document;
 import com.mns.wordfinder.parser.Tokenizer;
 import com.mns.wordfinder.search.Query;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 @Component
+@Slf4j
 public class App {
 
     private final InvertedIndex indexer;
     private final Query query;
-    private final FileLoader loader;
     private final Tokenizer tokenize;
+    private final ExtractorFactory factory;
 
-    public App(InvertedIndex indexer, Query qeury, FileLoader loader, Tokenizer tokenize){
+    public App(InvertedIndex indexer, Query qeury, Tokenizer tokenize, ExtractorFactory factory){
         this.indexer = indexer;
         this.query = qeury;
-        this.loader = loader;
         this.tokenize = tokenize;
+        this.factory = factory;
     }
 
-    public void initialize() {
+    public void initialize() throws IOException {
 
         System.out.println("---------------------");
         System.out.println("Fetching files...");
         System.out.println("---------------------");
 
-        // fetch and store all dir files in document model
+        // fetch all files from directory
+        // parse and store file text in Document model
         List<Document> docs = new ArrayList<>();
 
-        try (Stream<Path> stream = Files.list(Paths.get("doc_files"))) {
+        Stream<Path> stream = Files.list(Paths.get("doc_files"));
+        List<Path> filesList = stream.collect(Collectors.toList());
 
-            List<Path> filesList = stream.collect(Collectors.toList());
+        for (Path file : filesList) {
+            try{
+                DocumentExtractor extractor = factory.getExtractor(file);
+                String text = extractor.extract(file);
 
-            for (Path file : filesList) {
-                String content = loader.loadDir(file);
-                Document doc = new Document(file.getFileName().toString(), content);
+                Document doc = new Document(file.getFileName().toString(), text);
                 docs.add(doc);
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            catch(RuntimeException e){
+                throw new RuntimeException("Error loading extractor", e);
+            }
+            catch(Exception e){
+                log.warn("Error loading file {} : {}", file.getFileName(), e.getMessage());
+                continue;
+            }
         }
 
         // tokenize and index all documents content
