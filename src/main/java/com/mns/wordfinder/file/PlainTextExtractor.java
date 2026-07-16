@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class TxtExtractor implements DocumentExtractor {
+public class PlainTextExtractor implements DocumentExtractor {
 
     @Override
     public boolean supports(Path file) {
 
-        Boolean txt =  file.toString().endsWith(".txt");
-        Boolean md =  file.toString().endsWith(".md");
+        boolean txt =  file.toString().endsWith(".txt");
+        boolean md =  file.toString().endsWith(".md");
         return txt || md;
 
     }

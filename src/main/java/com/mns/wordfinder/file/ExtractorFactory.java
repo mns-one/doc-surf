@@ -20,7 +20,7 @@ public class ExtractorFactory {
         // Find the first extractor that supports the given file type
 
         if(extractors.isEmpty()){
-            throw new RuntimeException("No extractors available");
+            throw new IllegalStateException("No extractors available");
         }
 
         return extractors.stream()
