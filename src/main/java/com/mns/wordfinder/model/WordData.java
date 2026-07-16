@@ -42,7 +42,7 @@ public class WordData {
     }
     
     public Set<Integer> getPositions(String filename) {
-        return wordData.getOrDefault(filename, new HashSet<>());
+        return new HashSet<>(wordData.getOrDefault(filename, new HashSet<>()));
     }
 
 
