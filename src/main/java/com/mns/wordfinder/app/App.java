@@ -33,9 +33,9 @@ public class App {
     private final Tokenizer tokenize;
     private final ExtractorFactory factory;
 
-    public App(InvertedIndex indexer, Query qeury, Tokenizer tokenize, ExtractorFactory factory){
+    public App(InvertedIndex indexer, Query query, Tokenizer tokenize, ExtractorFactory factory){
         this.indexer = indexer;
-        this.query = qeury;
+        this.query = query;
         this.tokenize = tokenize;
         this.factory = factory;
     }
@@ -51,7 +51,7 @@ public class App {
         List<Document> docs = new ArrayList<>();
 
         try(Stream<Path> stream = Files.list(Paths.get("doc_files"))){
-            
+
             List<Path> filesList = stream.collect(Collectors.toList());
 
             for (Path file : filesList) {
