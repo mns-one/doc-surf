@@ -14,6 +14,7 @@ public class InvertedIndex {
 
     private final Map<String, WordData> index = new HashMap<>();
 
+    // add word to index with filename and position
     public void addWord(String word, String filename, int idx) {
 
         if(!index.containsKey(word)){
@@ -23,14 +24,17 @@ public class InvertedIndex {
 
     }
 
+    // check if word exists in index
     public boolean contains(String word) {
         return index.containsKey(word);
     }
 
+    // get word data for a given word
     public WordData getWordData(String word) {
         return index.get(word);
     }
 
+    // get all words in index
     public Set<String> allWords(){
         return index.keySet();
     }
@@ -39,6 +43,7 @@ public class InvertedIndex {
         System.out.println(index);
     }
 
+    // print index object stats
     public void stats() {
 
         int totalWords = 0;

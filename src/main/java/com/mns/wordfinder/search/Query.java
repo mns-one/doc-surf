@@ -52,6 +52,7 @@ public class Query {
 
         // check if candidate doc contains phrase words in correct order
         for (String filename : candidateDocs) {
+            // retuns no of occurences of phrase in document, 0 if not found
             int score = isPhraseInDoc(phrase, filename);
             if (score != 0) {
                 matchedDocs.put(filename, score);
@@ -61,7 +62,7 @@ public class Query {
         // return empty result if no docs left in map
         if(matchedDocs.size() == 0) return matchedDocs;
 
-        // sorted the map data using score values
+        // sorted the map data using score values to rank the documents based on phrase occurences
         Map<String, Integer> sortedResult = matchedDocs.entrySet()
         .stream()
         .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
@@ -94,7 +95,7 @@ public class Query {
                 }
             }
 
-            // if no next index found, phrase doesnt in document
+            // if no next index found, phrase does not exist in document
             if (matchedPositions.isEmpty()) {
                 return 0;
             }
