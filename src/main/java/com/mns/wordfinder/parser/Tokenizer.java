@@ -15,7 +15,7 @@ public class Tokenizer {
         
         text = text.replaceAll("[^a-z0-9]", " ");
 
-        return Arrays.asList(text.split("\\s+"));
+        return Arrays.asList(text.trim().split("\\s+"));
 
     }
     
