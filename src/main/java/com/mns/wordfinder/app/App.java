@@ -62,12 +62,12 @@ public class App {
                     Document doc = new Document(file.getFileName().toString(), text);
                     docs.add(doc);
                 }
-                catch(RuntimeException e){
-                    throw new RuntimeException("Error loading extractor", e);
-                }
-                catch(Exception e){
+                catch(UnsupportedOperationException e){
                     log.warn("Error loading file {} : {}", file.getFileName(), e.getMessage());
                     continue;
+                }
+                catch(Exception e){
+                    throw new RuntimeException("Error loading extractor", e);
                 }
             }
         }
