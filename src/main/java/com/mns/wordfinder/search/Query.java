@@ -80,17 +80,15 @@ public class Query {
     private int isPhraseInDoc(String[] phrase, String filename) {
 
         // use postional index to check for adjacency of phrase words in order
-        Set<Integer> firstPositions = indexer.getWordData(phrase[0]).getPositions(filename);
-        Set<Integer> currentPositions = firstPositions;
+        Set<Integer> currentPositions = indexer.getWordData(phrase[0]).getPositions(filename);
 
         for (int i = 1; i < phrase.length; i++) {
             Set<Integer> nextWordPositions = indexer.getWordData(phrase[i]).getPositions(filename);
-            Set<Integer> nextPositionSet = nextWordPositions;
             Set<Integer> matchedPositions = new HashSet<>();
 
             // build set of all next possible indexes
             for (int pos : currentPositions) {
-                if (nextPositionSet.contains(pos + 1)) {
+                if (nextWordPositions.contains(pos + 1)) {
                     matchedPositions.add(pos + 1);
                 }
             }
