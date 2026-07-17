@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import com.mns.wordfinder.index.InvertedIndex;
 import com.mns.wordfinder.model.Document;
 import com.mns.wordfinder.parser.Tokenizer;
+import com.mns.wordfinder.scanner.FileScanner;
 import com.mns.wordfinder.search.Query;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,45 +33,76 @@ public class App {
     private final Query query;
     private final Tokenizer tokenize;
     private final ExtractorFactory factory;
+    private final FileScanner fileScanner;
 
-    public App(InvertedIndex indexer, Query query, Tokenizer tokenize, ExtractorFactory factory){
+    public App(InvertedIndex indexer, Query query, Tokenizer tokenize, ExtractorFactory factory, FileScanner fileScanner) {
         this.indexer = indexer;
         this.query = query;
         this.tokenize = tokenize;
         this.factory = factory;
+        this.fileScanner = fileScanner;
     }
 
     public void initialize() throws IOException {
 
         System.out.println("---------------------");
-        System.out.println("Fetching files...");
+        System.out.println("Enter folder root path to scan: ");
+        System.out.println("(press Enter to use default path 'doc_files' for testing)");
+
+        // get user input for root path
+        Scanner scanner = new Scanner(System.in);
+        String user_path = scanner.nextLine().toLowerCase().trim();
+
+        for(int i=0; i<3; i++){
+
+            if(!Files.exists(Paths.get(user_path))){
+                System.out.println("Invalid path! Enter a valid path or press Enter to use default path 'doc_files' for testing: ");
+                user_path = scanner.nextLine().toLowerCase().trim();
+            }
+            else if(user_path.isEmpty()) {
+                break;
+            }
+            else {
+                break;
+            }
+            
+        }
+
+        // if user path is empty or invalid, switch to default path
+        if(user_path.isEmpty() || !Files.exists(Paths.get(user_path))){
+            System.out.println("Switching to default path 'doc_files' for testing...");
+            user_path = "doc_files";
+        }
+
+        Path rootDir = user_path.isEmpty() ? Paths.get("doc_files") : Paths.get(user_path);
+
         System.out.println("---------------------");
+        System.out.println("Fetching files from " + rootDir + " ...");
+        System.out.println("---------------------");
+
 
         // fetch all files from directory
         // parse and store file text in Document model
         List<Document> docs = new ArrayList<>();
+        List<Path> filesList = fileScanner.scan(rootDir);
 
-        try(Stream<Path> stream = Files.list(Paths.get("doc_files"))){
+        for (Path file : filesList) {
+            try{
+                DocumentExtractor extractor = factory.getExtractor(file);
+                String text = extractor.extract(file);
 
-            List<Path> filesList = stream.collect(Collectors.toList());
-
-            for (Path file : filesList) {
-                try{
-                    DocumentExtractor extractor = factory.getExtractor(file);
-                    String text = extractor.extract(file);
-
-                    Document doc = new Document(file.getFileName().toString(), text);
-                    docs.add(doc);
-                }
-                catch(UnsupportedOperationException e){
-                    log.warn("Error loading file {} : {}", file.getFileName(), e.getMessage());
-                    continue;
-                }
-                catch(Exception e){
-                    throw new RuntimeException("Error loading extractor", e);
-                }
+                Document doc = new Document(file.getFileName().toString(), text);
+                docs.add(doc);
+            }
+            catch(UnsupportedOperationException e){
+                log.warn("Error loading file {} : {}", file.getFileName(), e.getMessage());
+                continue;
+            }
+            catch(Exception e){
+                throw new RuntimeException("Error loading extractor", e);
             }
         }
+
 
         // tokenize and index all documents content
         for(Document doc : docs){
@@ -86,7 +118,7 @@ public class App {
         }
 
         System.out.println("---------------------");
-        System.out.println("Indexing complete!");
+        System.out.println("Indexing complete! (" + docs.size() + " files scanned)");
 		indexer.stats();
         System.out.println("---------------------");
 
